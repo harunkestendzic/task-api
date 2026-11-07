@@ -1,8 +1,16 @@
 from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from fastapi.exceptions import RequestValidationError
 
 app = FastAPI()
+
+@app.exception_handler(RequestValidationError)
+async def validation_error_handler(request, exc):
+    return JSONResponse(
+        status_code=400,
+        content={"error": "invalid request body"},
+    )
 
 tasks = [
     {"id": 1, "title": "Buy milk", "done": False},
