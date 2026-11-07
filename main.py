@@ -32,6 +32,7 @@ def find_task(task_id: int):
 
 @app.get("/")
 def read_root():
+    """Describe the API: its name, version, and endpoints."""
     return {
         "name": "Task API",
         "version": "1.0",
@@ -41,16 +42,19 @@ def read_root():
 
 @app.get("/health")
 def health():
+    """Check that the server is running."""
     return {"status": "ok"}
 
 
 @app.get("/tasks")
 def list_tasks():
+    """Return all tasks."""
     return tasks
 
 
 @app.get("/tasks/{task_id}")
 def get_task(task_id: int):
+    """Return one task by id, or 404 if it doesn't exist."""
     task = find_task(task_id)
     if task is None:
         return JSONResponse(
@@ -62,6 +66,7 @@ def get_task(task_id: int):
 
 @app.post("/tasks")
 def create_task(body: TaskCreate):
+    """Create a new task. Title is required and must not be empty."""
     global next_id
     title = body.title.strip()
     if not title:
@@ -77,6 +82,7 @@ def create_task(body: TaskCreate):
 
 @app.put("/tasks/{task_id}")
 def update_task(task_id: int, body: TaskUpdate):
+    """Update a task's title and/or done flag. Send at least one field."""
     task = find_task(task_id)
     if task is None:
         return JSONResponse(
@@ -103,6 +109,7 @@ def update_task(task_id: int, body: TaskUpdate):
 
 @app.delete("/tasks/{task_id}")
 def delete_task(task_id: int):
+    """Delete a task by id. Returns 204 on success, 404 if not found."""
     task = find_task(task_id)
     if task is None:
         return JSONResponse(
